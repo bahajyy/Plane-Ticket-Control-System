@@ -1,0 +1,36 @@
+// Install the Microsoft.AspNetCore.Mvc.Versioning NuGet package
+
+using AirlineApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+[ApiVersion("1.0")]  // Specify the API version for the controller
+[Route("api/v{version:apiVersion}/tickets")]
+[ApiController]
+public class TicketController : ControllerBase
+{
+    private static List<Ticket> _tickets = new List<Ticket>();
+
+    [HttpGet]
+    public ActionResult<IEnumerable<Ticket>> GetTickets()
+    {
+        Console.WriteLine($"Number of tickets: {_tickets.Count}");
+        return Ok(_tickets);
+    }
+
+    [HttpGet("{ticketId}")]
+    public ActionResult<Ticket> GetTicket(int ticketId)
+    {
+        var ticket = _tickets.FirstOrDefault(t => t.TicketId == ticketId);
+
+        if (ticket == null)
+        {
+            return NotFound("Ticket not found");
+        }
+
+        return Ok(ticket);
+    }
+}
